@@ -31,15 +31,23 @@ class Trigger:
         if (not power) or (not dev_id) or (dev_type == 'ssid') or (dev_id in DEVS_TO_IGNORE):
             return
         
-        if dev_id not in self.devices:
+        first = ""
+        add = True
+        for dev in self.devices["data"]:
+            if dev["mac"] == dev_id:
+                add = False
+        
+        if add:
             self.devices["data"].append({"mac":dev_id,"vendor": vendor, "readings":[]})
+            first = " @"
         
         i = 0
         for dev in self.devices["data"]:
         	if dev["mac"] == dev_id:
         		self.devices["data"][i]["readings"].append([power, time.time()])
         	i += 1
-        print(f"Device: {dev_id} "+ str(power))
+        
+        print(f"Device: {dev_id} "+ str(power) + first)
 
 
     def __del__(self):
