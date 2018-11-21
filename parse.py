@@ -7,6 +7,16 @@ with open(sys.argv[1], "r") as f:
 	data = str(f.read())
 	f.close()
 
+with open("./known_macs.txt", "r") as f:
+	known = str(f.read())
+	f.close()
+
+known_o = known.split("\n")
+known = {}
+for line in known_o:
+	x = line.split(" @ ")
+	known[x[0]] = x[1]
+
 data = data.replace("'", '"')
 
 data = dict(eval(data))["data"]
@@ -16,11 +26,37 @@ for device in data:
 	if data[i]["vendor"] in exclude_vendors:
 		i += 1
 		continue
-	print(data[i]["mac"]+ " - "+ str(data[i]["vendor"])+ " ("+ str(len(data[i]["readings"])) + ") " )
+	name_str = ""
+	if device in known:
+		name_str = " - "+ known[device]
+	print(data[i]["mac"]+ " - "+ str(data[i]["vendor"])+ " ("+ str(len(data[i]["readings"])) + ") " + name_str)
 	i += 1
 
 print("Who to parse?")
 mac = input(">")
+
+if mac == "master":
+	
+	i = 0
+	for device in data:
+		times = []
+		powers = []
+		device = data[i]["mac"]
+		if data[i]["vendor"] in exclude_vendors:
+			i += 1
+			continue
+		for reading in data[i]["readings"]:
+			times.append(reading[1])
+			powers.append(reading[0])
+		plt.plot(times, powers)
+		i += 1
+	
+	plt.xlabel('Time')
+	plt.ylabel('Power')
+	plt.title("Mapping for all")
+	plt.savefig(sys.argv[1]+"-"+mac+".png")
+	print(sys.argv[1]+"-"+mac+".png")
+	exit()
 
 i = 0
 for dev in data:
