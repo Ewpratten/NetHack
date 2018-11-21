@@ -1,2 +1,0 @@
-# NetHack
-Stuff and Things.

@@ -28,7 +28,7 @@ class Trigger:
 
     def __call__(self, dev_id=None, dev_type=None, power=None, vendor=None, **kwargs):
         # Only look at individual devices (device and bssids), and only look when power is present
-        if (not power) or (not dev_id) or (dev_type == 'ssid') or (dev_id in DEVS_TO_IGNORE) or (vendor == "Aruba Networks"):
+        if (not power) or (not dev_id) or (dev_type == 'ssid') or (dev_id in DEVS_TO_IGNORE):
             return
         
         if dev_id not in self.devices:
